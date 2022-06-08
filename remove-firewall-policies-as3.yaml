@@ -1,0 +1,13 @@
+- name: Use Collections
+  hosts: all
+  connection: httpapi
+  gather_facts: no
+  collections:
+    - f5networks.f5_bigip
+
+  tasks:
+    - name: Remove firewall policies
+      bigip_as3_deploy:
+        content: "{{ lookup('template', 'templates/firewall_policy.json.j2') }}"
+        state: absent
+        tenant: Common

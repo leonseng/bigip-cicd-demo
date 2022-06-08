@@ -1,0 +1,9 @@
+- name: "Remove policy {{ policy.name }}"
+  bigip_firewall_policy:
+    name: "{{ policy.name }}"
+    rules: "{{ policy.rules | json_query(query) }}"
+    provider: "{{ provider }}"
+    state: absent
+  vars:
+    query: "[*].name"
+  delegate_to: localhost

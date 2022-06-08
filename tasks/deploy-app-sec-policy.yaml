@@ -1,0 +1,7 @@
+- name: "Create policy {{ policy.name }}"
+  bigip_asm_policy_import:
+    name: "{{ policy.name }}"
+    inline: "{{ lookup('template', 'templates/app-sec-policy.json.j2') }}"
+    force: true
+    provider: "{{ provider }}"
+  delegate_to: localhost

@@ -1,0 +1,89 @@
+{
+  "class": "AS3",
+  "action": "deploy",
+  "persist": true,
+  "declaration": {
+    "class": "ADC",
+    "schemaVersion": "3.13.0",
+    "id": "Firewall_Rule_List",
+    "Common": {
+      "class": "Tenant",
+      "Shared": {
+        "class": "Application",
+        "template": "shared",
+  {% for name, list in address_lists.items() %}
+        "{{ name }}": {
+            "class": "Firewall_Address_List",
+            "addresses": [
+          {% for addr in list %}
+                "{{ addr }}"{% if not loop.last %},{% endif %}
+          {% endfor %}
+            ]
+        },
+  {% endfor %}
+  {% for name, list in port_lists.items() %}
+        "{{ name }}": {
+            "class": "Firewall_Port_List",
+            "ports": [
+          {% for port in list %}
+                "{{ port }}"{% if not loop.last %},{% endif %}
+          {% endfor %}
+            ]
+        },
+  {% endfor %}
+  {% for policy in firewall_policies_as3 %}
+        "{{ policy.name }}": {
+          "rules": [
+    {% for rule in policy.rules %}
+            {
+              "remark": "{{ rule.description }}",
+              "name": "{{ rule.name }}",
+              "action": "{{ rule.action }}",
+              "protocol": "{{ rule.protocol | default('any') }}",
+      {% if "source" in rule %}
+              "source": {
+        {% if "address_lists" in rule.source %}
+                "addressLists": [
+          {% for list in rule.source.address_lists %}
+                  { "use": "{{ list }}" }{% if not loop.last %},{% endif %}
+          {% endfor %}
+                ]{% if "port_lists" in rule.source %},{% endif %}
+        {% endif %}
+        {% if "port_lists" in rule.source %}
+                "portLists": [
+          {% for list in rule.source.port_lists %}
+                  { "use": "{{ list }}" }{% if not loop.last %},{% endif %}
+          {% endfor %}
+                ]
+        {% endif %}
+              },
+      {% endif %}
+      {% if "destination" in rule %}
+              "destination": {
+        {% if "address_lists" in rule.destination %}
+                "addressLists": [
+          {% for list in rule.destination.address_lists %}
+                  { "use": "{{ list }}" }{% if not loop.last %},{% endif %}
+          {% endfor %}
+                ]{% if "port_lists" in rule.destination %},{% endif %}
+        {% endif %}
+        {% if "port_lists" in rule.destination %}
+                "portLists": [
+          {% for list in rule.destination.port_lists %}
+                  { "use": "{{ list }}" }{% if not loop.last %},{% endif %}
+          {% endfor %}
+                ]
+        {% endif %}
+              },
+      {% endif %}
+              "loggingEnabled": true
+            }{% if not loop.last %},{% endif %}
+    {% endfor %}
+          ],
+          "class": "Firewall_Policy"
+        }{% if not loop.last %},{% endif %}
+  {% endfor %}
+      }
+    }
+  }
+}

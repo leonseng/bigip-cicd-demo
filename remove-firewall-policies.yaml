@@ -1,0 +1,13 @@
+- name: Use Collections
+  hosts: all
+  connection: local
+  gather_facts: no
+  collections:
+    - f5networks.f5_modules
+
+  tasks:
+    - name: Remove firewall policies
+      include_tasks: tasks/clean-up-policy.yaml
+      loop: "{{ firewall_policies }}"
+      loop_control:
+        loop_var: policy

@@ -1,0 +1,25 @@
+- name: "Create policy {{ policy.name }}"
+  bigip_firewall_policy:
+    name: "{{ policy.name }}"
+    rules: "{{ policy.rules | json_query(query) }}"
+    provider: "{{ provider }}"
+  vars:
+    query: "[*].name"
+  delegate_to: localhost
+
+- name: "Create rules for policy {{ policy.name }}"
+  bigip_firewall_rule:
+    name: "{{ rule.name }}"
+    description: "{{ rule.description }}"
+    parent_policy: "{{ policy.name }}"
+    protocol: "{{ rule.protocol | default('any') }}"
+    source: "{{ rule.source | default([]) }}"
+    destination: "{{ rule.destination | default([]) }}"
+    action: "{{ rule.action }}"
+    logging: yes
+    provider: "{{ provider }}"
+  delegate_to: localhost
+  loop: "{{ policy.rules }}"
+  loop_control:
+    loop_var: rule
+    label: "{{ rule.name }}"

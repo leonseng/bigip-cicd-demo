@@ -1,0 +1,48 @@
+{
+  "policy": {
+    "name": "{{ policy.name }}",
+    "template": {
+      "name": "FUNDAMENTAL"
+    },
+{% if policy.threat_campaign %}
+    "blocking-settings": {
+      "violations": [{
+          "name": "VIOL_THREAT_CAMPAIGN",
+          "alarm": true,
+          "block": true
+        }
+      ]
+    },
+{% endif %}
+{% if policy.owasp %}
+    "signature-sets": [{
+        "name": "All Signatures",
+        "block": false,
+        "alarm": false
+      }
+    ],
+{% endif %}
+{% if policy.block_bots %}
+    "bot-defense": {
+      "settings": {
+        "isEnabled": true
+      },
+      "mitigations": {
+        "classes": [{
+            "name": "trusted-bot",
+            "action": "alarm"
+          }, {
+            "name": "untrusted-bot",
+            "action": "block"
+          }, {
+            "name": "malicious-bot",
+            "action": "block"
+          }
+        ]
+      }
+    },
+{% endif %}
+    "applicationLanguage": "utf-8",
+    "enforcementMode": "blocking"
+  }
+}

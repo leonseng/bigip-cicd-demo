@@ -1,0 +1,13 @@
+- name: Use Collections
+  hosts: all
+  connection: local
+  gather_facts: no
+  collections:
+    - f5networks.f5_modules
+
+  tasks:
+    - name: Create Application Security policies
+      include_tasks: tasks/deploy-app-sec-policy.yaml
+      loop: "{{ app_sec_policies }}"
+      loop_control:
+        loop_var: policy
