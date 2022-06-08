@@ -1,7 +1,27 @@
+- name: Create temporary build directory
+  tempfile:
+    state: directory
+  register: temp_policy_dir
+  delegate_to: localhost
+
+- name: Render policy
+  set_fact:
+    policy_body: "{{ lookup('template', 'templates/app-sec-policy.json.j2') }}"
+    policy_filepath: "{{ temp_policy_dir.path }}/{{ policy.name }}.json"
+
+- debug:
+    msg: "{{ policy_body }}"
+
+- name: Create policy file
+  copy:
+    dest: "{{ policy_filepath }}"
+    content: "{{ policy_body }}"
+  delegate_to: localhost
+
 - name: "Create policy {{ policy.name }}"
   bigip_asm_policy_import:
     name: "{{ policy.name }}"
-    inline: "{{ lookup('template', 'templates/app-sec-policy.json.j2') }}"
     force: true
+    source: "{{ policy_filepath }}"
     provider: "{{ provider }}"
   delegate_to: localhost

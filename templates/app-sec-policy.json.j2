@@ -2,7 +2,10 @@
   "policy": {
     "name": "{{ policy.name }}",
     "template": {
-      "name": "FUNDAMENTAL"
+      "name": "POLICY_TEMPLATE_FUNDAMENTAL"
+    },
+    "general": {
+      "trustXff": "true"
     },
 {% if policy.threat_campaign %}
     "blocking-settings": {
