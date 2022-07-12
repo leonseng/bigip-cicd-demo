@@ -1,0 +1,15 @@
+# Used by f5_bigip
+ansible_host: 10.1.1.11
+ansible_user: admin
+ansible_httpapi_password: admin # DO NOT HARDCODE PASSWORD IN INVENTORY IN PRACTICE
+ansible_httpapi_port: 443
+ansible_network_os: f5networks.f5_bigip.bigip
+ansible_httpapi_use_ssl: yes
+ansible_httpapi_validate_certs: no
+
+# Used by f5_modules
+provider:
+  server: 10.1.1.11
+  user: admin
+  password: admin
+  validate_certs: no

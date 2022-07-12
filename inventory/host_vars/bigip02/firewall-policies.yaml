@@ -1,0 +1,31 @@
+firewall_policies:
+  - name: "f5_modules_http_policy"
+    rules:
+      - name: rule-1
+        description: Allow anyone to access HTTP VS
+        protocol: tcp
+        source:
+          - address: "192.168.0.0/24"
+        destination:
+          - address: "10.1.20.100"
+          - port: 443
+        action: accept
+      - name: rule-2
+        description: Deny all other traffic
+        action: drop
+  - name: "f5_modules_ftp_policy"
+    rules:
+      - name: rule-1
+        description: Allow internal clients access to FTP VS
+        protocol: tcp
+        source:
+          - address: "10.1.1.50"
+          - address_range: "192.168.0.100-192.168.0.200"
+        destination:
+          - address: "10.1.20.100"
+          - port: 20
+          - port: 21
+        action: accept
+      - name: rule-2
+        description: Deny all other traffic
+        action: drop
