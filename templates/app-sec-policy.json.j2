@@ -19,8 +19,8 @@
 {% endif %}
     "signature-sets": [{
         "name": "All Signatures",
-        "block": {% 'block' in policy.all_sigs_actions %},
-        "alarm": {% 'alarm' in policy.all_sigs_actions %}
+        "block": {%if 'block' in policy.all_sigs_actions %}true{% else %}false{% endif %},
+        "alarm": {%if 'alarm' in policy.all_sigs_actions %}true{% else %}false{% endif %}
       }
     ],
     "bot-defense": {
