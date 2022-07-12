@@ -19,8 +19,8 @@
 {% endif %}
     "signature-sets": [{
         "name": "All Signatures",
-        "block": {%if 'block' in policy.all_sigs_actions %}true{% else %}false{% endif %},
-        "alarm": {%if 'alarm' in policy.all_sigs_actions %}true{% else %}false{% endif %}
+        "block": {{ 'block' in policy.all_sigs_actions }},
+        "alarm": {{ 'alarm' in policy.all_sigs_actions }}
       }
     ],
     "bot-defense": {
@@ -33,7 +33,7 @@
             "action": "alarm"
           }, {
             "name": "untrusted-bot",
-            "action": "{%if policy.allow_untrusted_bots %}alarm{% else %}block{% endif %}"
+            "action": "{% if policy.allow_untrusted_bots %}alarm{% else %}block{% endif %}"
           }, {
             "name": "malicious-bot",
             "action": "block"
