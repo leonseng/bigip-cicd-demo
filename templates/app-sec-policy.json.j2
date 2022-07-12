@@ -17,15 +17,12 @@
       ]
     },
 {% endif %}
-{% if policy.owasp %}
     "signature-sets": [{
         "name": "All Signatures",
-        "block": false,
-        "alarm": false
+        "block": {% 'block' in policy.all_sigs_actions %},
+        "alarm": {% 'alarm' in policy.all_sigs_actions %}
       }
     ],
-{% endif %}
-{% if policy.block_bots %}
     "bot-defense": {
       "settings": {
         "isEnabled": true
@@ -36,7 +33,7 @@
             "action": "alarm"
           }, {
             "name": "untrusted-bot",
-            "action": "block"
+            "action": "{%if policy.allow_untrusted_bots %}alarm{% else %}block{% endif %}"
           }, {
             "name": "malicious-bot",
             "action": "block"
@@ -44,7 +41,6 @@
         ]
       }
     },
-{% endif %}
     "applicationLanguage": "utf-8",
     "enforcementMode": "blocking"
   }

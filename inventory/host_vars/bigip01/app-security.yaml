@@ -1,9 +1,9 @@
 app_sec_policies:
-  - name: f5_module_basic_policy_a
-    owasp: false
+  - name: shopping_site_policy
+    all_sigs_actions: ["alarm", "block"]
     threat_campaign: true
-    block_bots: true
-  - name: f5_module_full_policy
-    owasp: true
-    threat_campaign: true
-    block_bots: true
+    allow_untrusted_bots: false
+  - name: info_api_policy
+    all_sigs_actions: ["alarm"]
+    threat_campaign: false
+    allow_untrusted_bots: true
