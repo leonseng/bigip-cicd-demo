@@ -1,0 +1,17 @@
+name: GitHub Actions Demo
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Apply AFM firewall rules via AS3
+        run: |
+          ansible-playbook -i inventory/inventory.ini deploy-firewall-policies-as3.yaml
+      - name: Apply AFM firewall rules via f5-modules
+        run: |
+          ansible-playbook -i inventory/inventory.ini deploy-firewall-policies.yaml
+      - name: Apply AWAF WAF policies via f5-modules
+        run: |
+          ansible-playbook -i inventory/inventory.ini deploy-app-sec-policies.yaml
