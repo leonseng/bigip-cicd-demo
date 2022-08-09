@@ -5,7 +5,7 @@
       "name": "POLICY_TEMPLATE_FUNDAMENTAL"
     },
     "general": {
-{% if policy.allowed_response_codes %}
+{% if "allowed_response_codes" in policy %}
       "allowedResponseCodes": {{ policy.allowed_response_codes }}
 {% endif %}
     },
