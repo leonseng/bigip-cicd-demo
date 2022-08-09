@@ -5,7 +5,9 @@
       "name": "POLICY_TEMPLATE_FUNDAMENTAL"
     },
     "general": {
-      "trustXff": "true"
+{% if policy.allowed_response_codes %}
+      "allowedResponseCodes": {{ policy.allowed_response_codes }}
+{% endif %}
     },
 {% if policy.threat_campaign %}
     "blocking-settings": {
