@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  name: rd1-server
+  name: Default
 
 
 steps:
