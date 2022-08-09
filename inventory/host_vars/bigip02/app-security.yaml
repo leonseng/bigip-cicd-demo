@@ -3,7 +3,7 @@ app_sec_policies:
     all_sigs_actions: ["alarm", "block"]
     threat_campaign: true
     allow_untrusted_bots: false
-    allowed_response_codes: [401, 500]
+    allowed_response_codes: [401, 499, 500]
   - name: info_api_policy
     all_sigs_actions: ["alarm"]
     threat_campaign: false
