@@ -7,10 +7,10 @@
 
   tasks:
     - debug:
-        msg: "{{ lookup('template', 'templates/app-sec-policy.json.json.j2') }}"
+        msg: "{{ lookup('template', 'templates/app-sec-policy.json.j2') }}"
 
     - set_fact:
-        policy_b64: "{{ lookup('template', 'templates/app-sec-policy.json.json.j2') | b64encode }}"
+        policy_b64: "{{ lookup('template', 'templates/app-sec-policy.json.j2') | b64encode }}"
 
     - debug:
         msg: "{{ lookup('template', 'templates/app-with-waf.json.j2') }}"
