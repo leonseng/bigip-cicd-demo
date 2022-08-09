@@ -14,4 +14,4 @@ jobs:
       #     ansible-playbook -i inventory/inventory.ini deploy-firewall-policies.yaml --limit bigip01
       - name: Apply AWAF WAF policies via f5-modules
         run: |
-          ansible-playbook -i inventory/inventory.ini deploy-app-sec-policies.yaml --limit bigip01
+          ansible-playbook -i inventory/inventory.ini deploy-app-sec-policies.yaml
