@@ -1,0 +1,23 @@
+- name: Use Collections
+  hosts: all
+  connection: httpapi
+  gather_facts: no
+  collections:
+    - f5networks.f5_bigip
+
+  tasks:
+    - set_fact:
+        policy: "{{ app_sec_policies[0] }}"
+
+    - debug:
+        msg: "{{ lookup('template', 'templates/app-sec-policy.json.j2') }}"
+
+    - set_fact:
+        policy_b64: "{{ lookup('template', 'templates/app-sec-policy.json.j2') | to_json | b64encode }}"
+
+    - debug:
+        msg: "{{ lookup('template', 'templates/app-with-waf.json.j2') | to_json }}"
+
+    - name: Create VS with WAF policy
+      bigip_as3_deploy:
+        content: "{{ lookup('template', 'templates/app-with-waf.json.j2') | to_json }}"
