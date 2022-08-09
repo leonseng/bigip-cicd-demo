@@ -12,6 +12,6 @@ jobs:
       # - name: Apply AFM firewall rules via f5-modules
       #   run: |
       #     ansible-playbook -i inventory/inventory.ini deploy-firewall-policies.yaml --limit bigip01
-      - name: Apply AWAF WAF policies via f5-modules
+      - name: Deploy VS with WAF attached via AS3
         run: |
-          ansible-playbook -i inventory/inventory.ini deploy-app-sec-policies.yaml
+          ansible-playbook -i inventory/inventory.ini deploy-app-with-waf-as3.yaml
