@@ -8,10 +8,10 @@ jobs:
         uses: actions/checkout@v3
       - name: Apply AFM firewall rules via AS3
         run: |
-          ansible-playbook -i inventory/inventory.ini deploy-firewall-policies-as3.yaml
+          ansible-playbook -i inventory/inventory.ini deploy-firewall-policies-as3.yaml --limit bigip01
       - name: Apply AFM firewall rules via f5-modules
         run: |
-          ansible-playbook -i inventory/inventory.ini deploy-firewall-policies.yaml
+          ansible-playbook -i inventory/inventory.ini deploy-firewall-policies.yaml --limit bigip01
       - name: Apply AWAF WAF policies via f5-modules
         run: |
-          ansible-playbook -i inventory/inventory.ini deploy-app-sec-policies.yaml
+          ansible-playbook -i inventory/inventory.ini deploy-app-sec-policies.yaml --limit bigip01
