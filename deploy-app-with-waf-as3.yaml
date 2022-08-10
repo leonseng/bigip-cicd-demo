@@ -16,7 +16,7 @@
         policy_b64: "{{ lookup('template', 'templates/app-sec-policy.json.j2') | to_json | b64encode }}"
 
     - debug:
-        msg: "{{ lookup('template', 'templates/app-with-waf.json.j2') | to_json }}"
+        msg: "{{ lookup('template', 'templates/app-with-waf.json.j2') }}"
 
     - name: Create VS with WAF policy
       bigip_as3_deploy:
