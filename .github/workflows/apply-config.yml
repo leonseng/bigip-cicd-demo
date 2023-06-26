@@ -1,16 +1,18 @@
-name: Apply BIG-IP config
-on: [push]
+name: Apply configuration
+on:
+  push:
+    branches:
+      - 'master'
 jobs:
-  generate-artifacts:
+  apply-config:
     runs-on: self-hosted
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Generate artifact
-        run: |
-          make generate
-      - uses: actions/upload-artifact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: as3-config
           path: .artifact/
-
+      - name: Apply configuration
+        run: |
+          make apply
