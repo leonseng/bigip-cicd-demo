@@ -1,0 +1,5 @@
+app_sec_policies:
+  - name: as3_app_sec_policy
+    all_sigs_actions: ["alarm", "block"]
+    threat_campaign: true
+    allowed_response_codes: [200, 300]

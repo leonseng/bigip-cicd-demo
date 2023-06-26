@@ -1,6 +1,0 @@
-- name: "Remove policy {{ policy.name }}"
-  bigip_asm_policy_manage:
-    name: "{{ policy.name }}"
-    state: absent
-    provider: "{{ provider }}"
-  delegate_to: localhost

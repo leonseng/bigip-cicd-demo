@@ -1,0 +1,15 @@
+- name: Apply config
+  hosts: all
+  connection: httpapi
+  gather_facts: false
+  collections:
+    - f5networks.f5_bigip
+
+  tasks:
+    - name: Create firewall policies
+      bigip_as3_deploy:
+        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/firewall-policy.json') }}"
+
+    - name: Create VS
+      bigip_as3_deploy:
+        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/virtual-server.json') }}"

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/latest/as3-schema.json",
+  "class": "AS3",
+  "action": "deploy",
+  "persist": true,
+  "declaration": {
+    "class": "ADC",
+    "schemaVersion": "3.26.0",
+    "id": "{{ id }}",
+    "as3_tenant": {
+      "class": "Tenant",
+      "as3_app": {
+        "class": "Application",
+        "{{ vs.name }}": {
+          "class": "Service_HTTP",
+          "virtualAddresses": ["{{ vs.virtual_address }}"],
+          "pool": "as3_pool"{% if "app_sec_policy" in vs %},
+          "policyWAF": {
+            "use": "as3_waf_policy"
+          }
+{% endif %}
+        },
+        "as3_pool": {
+          "class": "Pool",
+          "monitors": [
+            "{{ vs.pool.monitor }}"
+          ],
+          "members": [
+{% for m in vs.pool.members %}
+            {
+              "addressDiscovery": "fqdn",
+              "servicePort": {{ m.split(":")[-1] }},
+              "hostname": "{{ m.split(":")[0] }}"
+            }{% if not loop.last %},{% endif %}
+{% endfor %}
+          ]
+        }{% if "app_sec_policy" in vs %},
+        "as3_waf_policy": {
+          "class": "WAF_Policy",
+          "policy": {
+            "base64": "{{ policy_json | b64encode }}"
+          },
+          "ignoreChanges": false
+        }
+{% endif %}
+      }
+    }
+  }
+}

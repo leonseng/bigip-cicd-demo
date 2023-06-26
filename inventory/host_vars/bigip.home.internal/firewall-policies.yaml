@@ -1,19 +1,17 @@
 address_lists:
-  client_a:
+  local_networks:
+    - "192.168.0.0/24"
     - "10.0.0.0/24"
-  client_b:
-    - "10.0.1.0/24"
-  client_c:
-    - "20.0.1.0/24"
-  ftpClients:
-    - "10.1.1.50"
-    - "192.168.0.100-192.168.0.200"
+  client:
+    - "123.4.5.6/32"
+  public:
+    - "0.0.0.0/0"
   server:
-    - "10.1.20.100"
+    - "192.168.0.78"
 
 port_lists:
-  httpsPort:
-    - 443
+  httpPort:
+    - 80
   ftpPorts:
     - 20
     - 21
@@ -26,14 +24,12 @@ firewall_policies_as3:
         protocol: tcp
         source:
           address_lists:
-            - client_a
-            - client_b
-            - client_c
+            - public
         destination:
           address_lists:
             - server
           port_lists:
-            - httpsPort
+            - httpPort
         action: accept
       - name: rule-2
         description: Deny all other traffic
@@ -45,7 +41,8 @@ firewall_policies_as3:
         protocol: tcp
         source:
           address_lists:
-            - ftpClients
+            - local_networks
+            - client
         destination:
           address_lists:
             - server

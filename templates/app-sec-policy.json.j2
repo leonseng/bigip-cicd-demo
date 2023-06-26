@@ -25,24 +25,6 @@
         "alarm": {{ 'alarm' in policy.all_sigs_actions }}
       }
     ],
-    "bot-defense": {
-      "settings": {
-        "isEnabled": true
-      },
-      "mitigations": {
-        "classes": [{
-            "name": "trusted-bot",
-            "action": "alarm"
-          }, {
-            "name": "untrusted-bot",
-            "action": "{% if policy.allow_untrusted_bots %}alarm{% else %}block{% endif %}"
-          }, {
-            "name": "malicious-bot",
-            "action": "block"
-          }
-        ]
-      }
-    },
     "applicationLanguage": "utf-8",
     "enforcementMode": "blocking"
   }
