@@ -1,8 +1,8 @@
 virtual_servers:
   - name: as3_vs_httpbin_proxy
-    virtual_address: "192.168.0.78"
+    virtual_address: "192.168.0.21"
     pool:
       monitor: http
       members:
-        - httpbin.org:80
+        - home-lab.home.internal:8080
     app_sec_policy: as3_app_sec_policy
