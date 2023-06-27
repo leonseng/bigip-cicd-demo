@@ -10,6 +10,12 @@
       bigip_as3_deploy:
         content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/firewall-policy.json') }}"
 
+    - name: Create test VS
+      when: stage is defined and stage == "test"
+      bigip_as3_deploy:
+        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/test/virtual-server.json') }}"
+
     - name: Create VS
+      when: stage is undefined or (stage is defined and stage != "test")
       bigip_as3_deploy:
         content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/virtual-server.json') }}"
