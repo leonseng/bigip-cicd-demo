@@ -4,7 +4,6 @@
   vars:
     last_run_time: "{{ ansible_date_time.iso8601_basic }}"
     artifact_dir: "{{ root_dir }}/.artifact//{{ inventory_hostname }}"
-
   tasks:
     - delegate_to: localhost
       block:
@@ -17,6 +16,11 @@
             path: "{{ artifact_dir }}"
             state: directory
 
+        - name: Create dev subdir in .artifact directory
+          file:
+            path: "{{ artifact_dir }}/dev"
+            state: directory
+
         - name: Make a note of last run time
           copy:
             content: "last_run: {{ last_run_time }}"
@@ -27,27 +31,17 @@
             content: "{{ lookup('template', '{{ root_dir }}/templates/firewall-policy.json.j2') | to_json(indent=2) }}"
             dest: "{{ artifact_dir }}/firewall-policy.json"
 
+        - name: Generate dev VS with WAF policy
+          include_tasks: "{{ root_dir }}/tasks/generate-vs-config.yaml"
+          vars:
+            conf_dir: "{{ artifact_dir }}/dev"
+            id: "{{ last_run_time }}"
+            vs: "{{ virtual_servers[0] }}"
+            deploy_in_dev: true
+
         - name: Generate VS with WAF policy
-          block:
-            - name: Get policy setting for VS
-              set_fact:
-                policy: "{{ app_sec_policies | selectattr('name', 'equalto', app_sec_policy) | list | first }}"
-
-            - name: Generate policy
-              block:
-                - name: Render policy to JSON
-                  set_fact:
-                    policy_json: "{{ lookup('template', '{{ root_dir }}/templates/app-sec-policy.json.j2') | to_json(indent=2) }}"
-
-                - name: Store policy as artifact
-                  copy:
-                    content: "{{ policy_json }}"
-                    dest: "{{ artifact_dir }}/app-sec-policy.json"
-
-            - name: Generate VS config with WAF policy
-              copy:
-                content: "{{ lookup('template', '{{ root_dir }}/templates/app.json.j2') | to_json(indent=2) }}"
-                dest: "{{ artifact_dir }}/virtual-server.json"
-              vars:
-                id: "{{ last_run_time }}"
-                vs: "{{ virtual_servers[0] }}"
+          include_tasks: "{{ root_dir }}/tasks/generate-vs-config.yaml"
+          vars:
+            conf_dir: "{{ artifact_dir }}"
+            id: "{{ last_run_time }}"
+            vs: "{{ virtual_servers[0] }}"
