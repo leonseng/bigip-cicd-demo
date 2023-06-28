@@ -10,6 +10,10 @@
       bigip_as3_deploy:
         content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/virtual-server.json') }}"
 
+    - name: Remove dev VS
+      bigip_as3_deploy:
+        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/dev/virtual-server.json') }}"
+
     - name: Remove firewall policies
       bigip_as3_deploy:
         content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/firewall-policy.json') }}"

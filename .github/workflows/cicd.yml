@@ -14,7 +14,7 @@ jobs:
           name: as3-config
           path: .artifact/
 
-  apply-config-in-test:
+  apply-config-in-dev:
     runs-on: self-hosted
     needs: generate-artifacts
     if: github.ref != 'refs/heads/master'
@@ -27,8 +27,16 @@ jobs:
           path: .artifact/
       - name: Apply configuration
         run: |
-          make apply-in-test
-          make verify-in-test
+          make apply-in-dev
+
+  test-in-dev:
+    runs-on: self-hosted
+    needs: apply-config-in-dev
+    if: github.ref != 'refs/heads/master'
+    steps:
+      - name: Apply configuration
+        run: |
+          make test-in-dev
 
   apply-config:
     runs-on: self-hosted
@@ -44,4 +52,12 @@ jobs:
       - name: Apply configuration
         run: |
           make apply
-          make verify
+
+  test:
+    runs-on: self-hosted
+    needs: apply-config
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Apply configuration
+        run: |
+          make test

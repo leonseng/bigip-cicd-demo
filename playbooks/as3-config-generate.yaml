@@ -16,9 +16,9 @@
             path: "{{ artifact_dir }}"
             state: directory
 
-        - name: Create test subdir in .artifact directory
+        - name: Create dev subdir in .artifact directory
           file:
-            path: "{{ artifact_dir }}/test"
+            path: "{{ artifact_dir }}/dev"
             state: directory
 
         - name: Make a note of last run time
@@ -31,13 +31,13 @@
             content: "{{ lookup('template', '{{ root_dir }}/templates/firewall-policy.json.j2') | to_json(indent=2) }}"
             dest: "{{ artifact_dir }}/firewall-policy.json"
 
-        - name: Generate test VS with WAF policy
+        - name: Generate dev VS with WAF policy
           include_tasks: "{{ root_dir }}/tasks/generate-vs-config.yaml"
           vars:
-            conf_dir: "{{ artifact_dir }}/test"
+            conf_dir: "{{ artifact_dir }}/dev"
             id: "{{ last_run_time }}"
             vs: "{{ virtual_servers[0] }}"
-            deploy_in_test: true
+            deploy_in_dev: true
 
         - name: Generate VS with WAF policy
           include_tasks: "{{ root_dir }}/tasks/generate-vs-config.yaml"

@@ -1,7 +1,7 @@
 virtual_servers:
   - name: as3_vs_httpbin_proxy
     virtual_address: "192.168.0.21"
-    test_virtual_address: "192.168.0.200"
+    dev_virtual_address: "192.168.0.200"
     pool:
       monitor: http
       members:

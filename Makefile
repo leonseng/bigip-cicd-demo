@@ -1,37 +1,37 @@
-.PHONY: generate apply apply-in-test verify-in-test clean run
+.PHONY: generate apply apply-in-dev verify-in-dev clean run
 
 generate:
 	ansible-playbook -i inventory/inventory.ini playbooks/as3-config-generate.yaml
 
-apply-in-test:
-	ansible-playbook -i inventory/inventory.ini playbooks/as3-config-apply.yaml --extra-vars "stage=test"
+apply-in-dev:
+	ansible-playbook -i inventory/inventory.ini playbooks/as3-config-apply.yaml --extra-vars "stage=dev"
 
-TEST_VS_STATS_PATH := "/mgmt/tm/ltm/virtual/~as3_tenant_test~as3_app~as3_vs_httpbin_proxy/stats"
-TEST_VS_IP := "192.168.0.200"
-verify-in-test:
-	@echo "Checking Test VS status..."
+DEV_VS_STATS_PATH := "/mgmt/tm/ltm/virtual/~as3_tenant_dev~as3_app~as3_vs_httpbin_proxy/stats"
+DEV_VS_IP := "192.168.0.200"
+test-in-dev:
+	@echo "Checking dev VS status..."
 	@if timeout 10 bash -c ' \
-		until [ "$$(curl -sk -u admin:admin https://bigip.home.internal:8443$(TEST_VS_STATS_PATH) | \
-		jq -r ".entries[\"https://localhost$(TEST_VS_STATS_PATH)\"].nestedStats.entries.\"status.availabilityState\".description")" = "available" ]; \
+		until [ "$$(curl -sk -u admin:admin https://bigip.home.internal:8443$(DEV_VS_STATS_PATH) | \
+		jq -r ".entries[\"https://localhost$(DEV_VS_STATS_PATH)\"].nestedStats.entries.\"status.availabilityState\".description")" = "available" ]; \
 		do \
 			sleep 1; \
 		done' \
 	; then \
-		echo "Success: Test VS status is available"; \
+		echo "Success: dev VS status is available"; \
 	else \
-		echo "Failed: Test VS status is NOT available"; \
+		echo "Failed: dev VS status is NOT available"; \
 		exit 1; \
 	fi
 
-	@echo "Send test traffic to Test VS"
-	@curl --fail $(TEST_VS_IP)/headers
+	@echo "Send test traffic to dev VS"
+	@curl --fail $(DEV_VS_IP)/headers
 
 apply:
 	ansible-playbook -i inventory/inventory.ini playbooks/as3-config-apply.yaml
 
-VS_STATS_PATH := "/mgmt/tm/ltm/virtual/~as3_tenant_test~as3_app~as3_vs_httpbin_proxy/stats"
+VS_STATS_PATH := "/mgmt/tm/ltm/virtual/~as3_tenant_dev~as3_app~as3_vs_httpbin_proxy/stats"
 VS_IP := "192.168.0.21"
-verify:
+test:
 	@echo "Checking VS status..."
 	@if timeout 10 bash -c ' \
 		until [ "$$(curl -sk -u admin:admin https://bigip.home.internal:8443$(VS_STATS_PATH) | \

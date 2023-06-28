@@ -7,13 +7,13 @@
     "class": "ADC",
     "schemaVersion": "3.26.0",
     "id": "{{ id }}",
-    "as3_tenant{% if deploy_in_test is defined and deploy_in_test %}_test{% endif %}": {
+    "as3_tenant{% if deploy_in_dev is defined and deploy_in_dev %}_dev{% endif %}": {
       "class": "Tenant",
       "as3_app": {
         "class": "Application",
         "{{ vs.name }}": {
           "class": "Service_HTTP",
-          "virtualAddresses": ["{{ vs.test_virtual_address if deploy_in_test is defined and deploy_in_test else vs.virtual_address }}"],
+          "virtualAddresses": ["{{ vs.dev_virtual_address if deploy_in_dev is defined and deploy_in_dev else vs.virtual_address }}"],
           "pool": "as3_pool"{% if "app_sec_policy" in vs %},
           "policyWAF": {
             "use": "as3_waf_policy"
