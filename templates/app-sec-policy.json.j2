@@ -4,6 +4,14 @@
     "template": {
       "name": "POLICY_TEMPLATE_FUNDAMENTAL"
     },
+{% if "openapi_spec_link" in policy %}
+
+    "open-api-files": [
+      {
+        "link": "{{ policy.openapi_spec_link }}"
+      }
+    ],
+{% endif %}
     "general": {
 {% if "allowed_response_codes" in policy %}
       "allowedResponseCodes": {{ policy.allowed_response_codes }}
