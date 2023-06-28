@@ -13,6 +13,7 @@ jobs:
         with:
           name: as3-config
           path: .artifact/
+
   apply-config-in-test:
     runs-on: self-hosted
     needs: generate-artifacts
@@ -27,6 +28,8 @@ jobs:
       - name: Apply configuration
         run: |
           make apply-in-test
+          make verify-in-test
+
   apply-config:
     runs-on: self-hosted
     needs: generate-artifacts
@@ -41,3 +44,4 @@ jobs:
       - name: Apply configuration
         run: |
           make apply
+          make verify
