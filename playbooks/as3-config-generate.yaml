@@ -48,16 +48,12 @@
             all_tenants: "{{ applications | map(attribute='tenant') | unique | list }}"
 
         - name: Generate dev applications for each tenant
-          copy:
-            content: "{{ lookup('template', '{{ root_dir }}/templates/app.json.j2') | to_json(indent=2) }}"
-            dest: "{{ conf_dir }}/tenant-{{ tenant }}.json"
           loop: "{{ all_tenants }}"
           loop_control:
             loop_var: tenant
+          include_tasks: "{{ root_dir }}/tasks/generate-tenant-config.yaml"
           vars:
             conf_dir: "{{ artifact_dir }}/dev"
-            id: "{{ last_run_time }}"
-            apps: "{{ applications | selectattr('tenant', 'match', tenant) | list }}"
             deploy_in_dev: true
 
         - name: Generate applications for each tenant
@@ -67,6 +63,4 @@
           include_tasks: "{{ root_dir }}/tasks/generate-tenant-config.yaml"
           vars:
             conf_dir: "{{ artifact_dir }}"
-            id: "{{ last_run_time }}"
-            apps: "{{ applications | selectattr('tenant', 'match', tenant) | list }}"
             deploy_in_dev: false
