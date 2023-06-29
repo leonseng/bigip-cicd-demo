@@ -10,22 +10,34 @@
       bigip_as3_deploy:
         content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/firewall-policy.json') }}"
 
-    - name: Get a list of unique tenants defined
-      set_fact:
-        all_tenants: "{{ applications | map(attribute='tenant') | unique | list }}"
+    - block:
+        - name: Get list of tenants to be deployed in dev
+          find:
+            paths: "{{ root_dir }}/.artifact/{{ inventory_hostname }}/dev"
+            file_type: file
+            patterns: "tenant-*"
+          register: files_result
 
-    - name: Create dev VS
-      when: stage is defined and stage == "dev"
-      loop: "{{ all_tenants }}"
-      loop_control:
-        loop_var: tenant
-      bigip_as3_deploy:
-        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/dev/tenant-{{ tenant }}.json') }}"
+        - name: Create dev tenants
+          loop: "{{ files_result.files }}"
+          loop_control:
+            loop_var: as3_json_file
+            label: "{{ as3_json_file.path | basename }}"
+          bigip_as3_deploy:
+            content: "{{ lookup('file', '{{ as3_json_file.path }}') }}"
 
-    - name: Create VS
-      when: stage is undefined or (stage is defined and stage != "dev")
-      loop: "{{ all_tenants }}"
-      loop_control:
-        loop_var: tenant
-      bigip_as3_deploy:
-        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/tenant-{{ tenant }}.json') }}"
+    - block:
+        - name: Get list of tenants to be deployed
+          find:
+            paths: "{{ root_dir }}/.artifact/{{ inventory_hostname }}"
+            file_type: file
+            patterns: "tenant-*"
+          register: files_result
+
+        - name: Create tenants
+          loop: "{{ files_result.files }}"
+          loop_control:
+            loop_var: as3_json_file
+            label: "{{ as3_json_file.path | basename }}"
+          bigip_as3_deploy:
+            content: "{{ lookup('file', '{{ as3_json_file.path }}') }}"
