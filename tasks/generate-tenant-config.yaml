@@ -1,0 +1,7 @@
+- name: Generate Tenant config
+  delegate_to: localhost
+  block:
+    - name: Generate tenant config
+      copy:
+        content: "{{ lookup('template', '{{ root_dir }}/templates/app.json.j2') | to_json(indent=2) }}"
+        dest: "{{ conf_dir }}/tenant-{{ tenant }}.json"

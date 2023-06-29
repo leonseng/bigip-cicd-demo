@@ -1,0 +1,14 @@
+- name: Check if policy {{ policy.name }} has been rendered
+  set_fact:
+    is_policy_rendered: "{{ policy.name in rendered_policies }}"
+
+- when: not is_policy_rendered
+  block:
+    - name: Render policy {{ policy.name }}
+      set_fact:
+        rendered_policies: "{{ rendered_policies | combine({policy.name: (lookup('template', '{{ root_dir }}/templates/app-sec-policy.json.j2'))}) }}"
+
+    - name: Write rendered policy to local file
+      copy:
+        content: "{{ rendered_policies[policy.name] | to_json(indent=2) }}"
+        dest: "{{ root_dir }}/.artifact/{{ inventory_hostname }}/app-sec-policies/{{ policy.name }}.json"
