@@ -1,7 +1,7 @@
 .PHONY: generate apply apply-in-dev verify-in-dev clean run
 
 generate:
-	ansible-playbook -i inventory/inventory.ini playbooks/as3-config-generate.yaml -vvv
+	ansible-playbook -i inventory/inventory.ini playbooks/as3-config-generate.yaml
 
 apply-in-dev:
 	ansible-playbook -i inventory/inventory.ini playbooks/as3-config-apply.yaml --extra-vars "stage=dev"
