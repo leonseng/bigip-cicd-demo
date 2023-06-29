@@ -3,7 +3,8 @@
   gather_facts: false
   vars:
     last_run_time: "{{ ansible_date_time.iso8601_basic }}"
-    artifact_dir: "{{ root_dir }}/.artifact//{{ inventory_hostname }}"
+    artifact_dir: "{{ root_dir }}/.artifact/{{ inventory_hostname }}"
+    rendered_policies: {}
   tasks:
     - delegate_to: localhost
       block:
@@ -31,17 +32,41 @@
             content: "{{ lookup('template', '{{ root_dir }}/templates/firewall-policy.json.j2') | to_json(indent=2) }}"
             dest: "{{ artifact_dir }}/firewall-policy.json"
 
-        - name: Generate dev VS with WAF policy
-          include_tasks: "{{ root_dir }}/tasks/generate-vs-config.yaml"
+        - name: Create app sec policy subdir in .artifact directory
+          file:
+            path: "{{ artifact_dir }}/app-sec-policies"
+            state: directory
+
+        - name: Render all app sec policies used by tenant
+          loop: "{{ app_sec_policies }}"
+          loop_control:
+            loop_var: policy
+          include_tasks: "{{ root_dir }}/tasks/render-app-sec-policies.yaml"
+
+        - name: Get a list of unique tenants defined
+          set_fact:
+            all_tenants: "{{ applications | map(attribute='tenant') | unique | list }}"
+
+        - name: Generate dev applications for each tenant
+          copy:
+            content: "{{ lookup('template', '{{ root_dir }}/templates/app.json.j2') | to_json(indent=2) }}"
+            dest: "{{ conf_dir }}/tenant-{{ tenant }}.json"
+          loop: "{{ all_tenants }}"
+          loop_control:
+            loop_var: tenant
           vars:
             conf_dir: "{{ artifact_dir }}/dev"
             id: "{{ last_run_time }}"
-            vs: "{{ virtual_servers[0] }}"
+            apps: "{{ applications | selectattr('tenant', 'match', tenant) | list }}"
             deploy_in_dev: true
 
-        - name: Generate VS with WAF policy
-          include_tasks: "{{ root_dir }}/tasks/generate-vs-config.yaml"
+        - name: Generate applications for each tenant
+          loop: "{{ all_tenants }}"
+          loop_control:
+            loop_var: tenant
+          include_tasks: "{{ root_dir }}/tasks/generate-tenant-config.yaml"
           vars:
             conf_dir: "{{ artifact_dir }}"
             id: "{{ last_run_time }}"
-            vs: "{{ virtual_servers[0] }}"
+            apps: "{{ applications | selectattr('tenant', 'match', tenant) | list }}"
+            deploy_in_dev: false

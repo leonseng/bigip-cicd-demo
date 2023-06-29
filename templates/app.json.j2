@@ -6,27 +6,33 @@
   "declaration": {
     "class": "ADC",
     "schemaVersion": "3.26.0",
-    "id": "{{ id }}",
-    "as3_tenant{% if deploy_in_dev is defined and deploy_in_dev %}_dev{% endif %}": {
+    "id": "{{ tenant }}_{{ id }}",
+    "{{ tenant }}{% if deploy_in_dev %}_dev{% endif %}": {
       "class": "Tenant",
-      "as3_app": {
+{% for app in apps %}
+      "{{ app.name }}_app": {
         "class": "Application",
-        "{{ vs.name }}": {
+        "{{ app.name }}_svc": {
           "class": "Service_HTTP",
-          "virtualAddresses": ["{{ vs.dev_virtual_address if deploy_in_dev is defined and deploy_in_dev else vs.virtual_address }}"],
-          "pool": "as3_pool"{% if "app_sec_policy" in vs %},
+          "virtualAddresses": ["{% if deploy_in_dev and "dev_virtual_address" in app %}{{ app.dev_virtual_address }}{% else %}{{ app.virtual_address }}{% endif %}"],
+          "pool": "as3_pool"{% if "app_sec_policy" in app %},
           "policyWAF": {
             "use": "as3_waf_policy"
-          }
+          },
+          "securityLogProfiles": [
+            {
+              "bigip": "/Common/Log all requests"
+            }
+          ]
 {% endif %}
         },
         "as3_pool": {
           "class": "Pool",
           "monitors": [
-            "{{ vs.pool.monitor }}"
+            "{{ app.pool.monitor }}"
           ],
           "members": [
-{% for m in vs.pool.members %}
+{% for m in app.pool.members %}
             {
               "addressDiscovery": "fqdn",
               "servicePort": {{ m.split(":")[-1] }},
@@ -35,16 +41,17 @@
             }{% if not loop.last %},{% endif %}
 {% endfor %}
           ]
-        }{% if "app_sec_policy" in vs %},
+        }{% if "app_sec_policy" in app %},
         "as3_waf_policy": {
           "class": "WAF_Policy",
           "policy": {
-            "base64": "{{ policy_json | b64encode }}"
+            "base64": "{{ rendered_policies[app.app_sec_policy] | to_json | b64encode }}"
           },
           "ignoreChanges": false
         }
 {% endif %}
-      }
+      }{% if not loop.last %},{% endif %}
+{% endfor %}
     }
   }
 }

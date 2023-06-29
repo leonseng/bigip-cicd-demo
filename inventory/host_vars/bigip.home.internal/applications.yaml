@@ -1,0 +1,18 @@
+applications:
+  - tenant: as3_sample
+    name: as3_vs_sample
+    virtual_address: "192.168.0.200"
+    pool:
+      monitor: http
+      members:
+        - home-lab.home.internal:8080
+    app_sec_policy: as3_sample
+  - tenant: as3_openapi
+    name: as3_vs_httpbin_proxy
+    virtual_address: "192.168.0.201"
+    dev_virtual_address: "192.168.0.211"
+    pool:
+      monitor: http
+      members:
+        - home-lab.home.internal:8080
+    app_sec_policy: as3_httpbin_openapi
