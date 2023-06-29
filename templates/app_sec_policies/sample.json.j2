@@ -1,0 +1,13 @@
+{
+  "policy": {
+    "name": "{{ var.name }}",
+    "template": {
+      "name": "POLICY_TEMPLATE_FUNDAMENTAL"
+    },
+    "general": {
+      "allowedResponseCodes": {{ var.allowed_response_codes }}
+    },
+    "applicationLanguage": "utf-8",
+    "enforcementMode": "blocking"
+  }
+}

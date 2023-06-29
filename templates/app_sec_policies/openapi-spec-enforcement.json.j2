@@ -1,0 +1,14 @@
+{
+  "policy": {
+    "name": "{{ var.name }}",
+    "template": {
+      "name": "POLICY_TEMPLATE_API_SECURITY"
+    },
+    "open-api-files": [
+      {
+        "link": "{{ var.openapi_spec_link }}"
+      }
+    ],
+    "enforcementMode": "blocking"
+  }
+}

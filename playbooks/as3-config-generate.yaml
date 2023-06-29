@@ -2,7 +2,7 @@
   hosts: all
   gather_facts: false
   vars:
-    last_run_time: "{{ ansible_date_time.iso8601_basic }}"
+    id: "{{ ansible_date_time.iso8601_basic }}"
     artifact_dir: "{{ root_dir }}/.artifact/{{ inventory_hostname }}"
     rendered_policies: {}
   tasks:
@@ -24,24 +24,13 @@
 
         - name: Make a note of last run time
           copy:
-            content: "last_run: {{ last_run_time }}"
+            content: "last_run: {{ id }}"
             dest: "{{ root_dir }}/.artifact/.metadata"
 
         - name: Generate firewall policies
           copy:
             content: "{{ lookup('template', '{{ root_dir }}/templates/firewall-policy.json.j2') | to_json(indent=2) }}"
             dest: "{{ artifact_dir }}/firewall-policy.json"
-
-        - name: Create app sec policy subdir in .artifact directory
-          file:
-            path: "{{ artifact_dir }}/app-sec-policies"
-            state: directory
-
-        - name: Render all app sec policies used by tenant
-          loop: "{{ app_sec_policies }}"
-          loop_control:
-            loop_var: policy
-          include_tasks: "{{ root_dir }}/tasks/render-app-sec-policies.yaml"
 
         - name: Get a list of unique tenants defined
           set_fact:
@@ -53,7 +42,6 @@
             loop_var: tenant
           include_tasks: "{{ root_dir }}/tasks/generate-tenant-config.yaml"
           vars:
-            conf_dir: "{{ artifact_dir }}/dev"
             deploy_in_dev: true
 
         - name: Generate applications for each tenant
@@ -62,5 +50,4 @@
             loop_var: tenant
           include_tasks: "{{ root_dir }}/tasks/generate-tenant-config.yaml"
           vars:
-            conf_dir: "{{ artifact_dir }}"
             deploy_in_dev: false

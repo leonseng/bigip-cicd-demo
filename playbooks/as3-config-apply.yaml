@@ -10,7 +10,8 @@
       bigip_as3_deploy:
         content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/firewall-policy.json') }}"
 
-    - block:
+    - when: stage is defined and stage == "dev"
+      block:
         - name: Get list of tenants to be deployed in dev
           find:
             paths: "{{ root_dir }}/.artifact/{{ inventory_hostname }}/dev"
@@ -26,7 +27,8 @@
           bigip_as3_deploy:
             content: "{{ lookup('file', '{{ as3_json_file.path }}') }}"
 
-    - block:
+    - when: stage is not defined or (stage is defined and stage != "dev")
+      block:
         - name: Get list of tenants to be deployed
           find:
             paths: "{{ root_dir }}/.artifact/{{ inventory_hostname }}"
