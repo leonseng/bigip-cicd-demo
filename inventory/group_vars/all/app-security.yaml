@@ -1,6 +1,0 @@
-app_sec_policies:
-  - name: as3_sample
-    threat_campaign: true
-    allowed_response_codes: [200, 400]
-  - name: as3_httpbin_openapi
-    openapi_spec_link: https://gist.githubusercontent.com/leonseng/33eecd948cd6ae9d8867708a5fef12d2/raw/dfc613365f326209e04a11e07281879a50e64b33/httpbin-openapi-spec.yaml
