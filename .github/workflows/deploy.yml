@@ -15,11 +15,6 @@ jobs:
       - name: Apply configuration
         run: |
           make apply
-
-  trigger-test:
-    runs-on: self-hosted
-    needs: deploy-config
-    steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
