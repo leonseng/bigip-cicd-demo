@@ -18,7 +18,7 @@ jobs:
       - name: Run test target
         run: |
           set -o pipefail
-          make test | tee test-output.txt
+          make test 2>&1 | tee test-output.txt
       - name: Extract test results to be published to Github Issue
         if: failure()
         id: extract-results
