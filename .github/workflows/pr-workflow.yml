@@ -11,7 +11,7 @@ jobs:
       - uses: dawidd6/action-download-artifact@v2
         with:
           workflow: generate-artifacts.yml
-          pr: ${{github.event.pull_request.number}}
+          pr: ${{ github.event.pull_request.number }}
           name: as3-config
           path: .artifact/
       - name: Apply configuration in dev
@@ -28,13 +28,14 @@ jobs:
       - uses: dawidd6/action-download-artifact@v2
         with:
           workflow: generate-artifacts.yml
-          pr: ${{github.event.pull_request.number}}
+          pr: ${{ github.event.pull_request.number }}
           name: as3-config
-          path: .artifact/
+          skip_unpack: true
+      - run: ls -la
       - name: Pull request artifacts
         uses: gavv/pull-request-artifacts@v1.0.0
         with:
           commit: ${{ github.event.pull_request.head.sha }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: |
-            .artifact/*
+            as3-config.zip
