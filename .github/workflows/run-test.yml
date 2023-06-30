@@ -16,24 +16,22 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Run test target
-        id: run-test-target
         run: |
-          set -e
           set -o pipefail
-
           make test | tee test-output.txt
-
+      - name: Extract test results to be published to Github Issue
+        if: failure()
+        id: extract-results
+        run: |
           echo 'TEST_OUTPUT<<EOF' >> $GITHUB_OUTPUT
           cat test-output.txt >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
-
       - name: Create GitHub issue if test failed
         if: failure()
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST_OUTPUT: ${{ steps.run-test-target.outputs.TEST_OUTPUT }}
-
+          TEST_OUTPUT: ${{ steps.extract-results.outputs.TEST_OUTPUT }}
       - name: Set final commit status
         if: always()
         uses: myrotvorets/set-commit-status-action@master
