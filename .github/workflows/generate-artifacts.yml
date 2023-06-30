@@ -16,15 +16,11 @@ jobs:
         with:
           name: as3-config
           path: .artifact/
-
-      - run: echo "${{ toJson(github) }}"
-
-  trigger-pr-flow:
-    runs-on: self-hosted
-    needs: generate-artifacts
-    if: github.event_name == 'pull_request'
-    steps:
-      - name: Repository Dispatch
+      - uses: 8BitJonny/gh-get-current-pr@2.2.0
+        id: pr-check
+      - run: 'echo "Is commit in PR: ${{ steps.pr-check.outputs.found }}"'
+      - name: Trigger pr-workflow
+        if: steps.pr-check.outputs.found
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.REPO_DISPATCH_PAT }}
