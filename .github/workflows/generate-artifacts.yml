@@ -1,8 +1,8 @@
 name: Generate artifacts
 on:
   push:
-    branches:
-      - '!master'
+    branches-ignore:
+      - master
 jobs:
   generate-artifacts:
     runs-on: self-hosted
