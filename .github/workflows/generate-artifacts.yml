@@ -1,5 +1,7 @@
 name: Generate artifacts
 on:
+  pull_request:
+    types: [opened, synchronize]
   push:
     branches-ignore:
       - master
