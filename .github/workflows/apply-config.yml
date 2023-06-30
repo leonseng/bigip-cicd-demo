@@ -1,0 +1,33 @@
+name: Apply config
+on:
+  push:
+    branches:
+      - master
+jobs:
+  apply-config:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          branch: master
+          name: as3-config
+          path: .artifact/
+
+      - name: Apply configuration
+        run: |
+          make apply
+
+  trigger-test:
+    runs-on: self-hosted
+    needs: apply-config
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.REPO_DISPATCH_PAT }}
+          event-type: run-test

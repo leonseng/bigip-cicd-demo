@@ -1,0 +1,19 @@
+name: Run PR workflow
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  test-in-dev:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Generate artifact
+        run: |
+          make generate
+      - name: Apply configuration in dev
+        run: |
+          make apply-in-dev
+      - name: Run test in dev
+        run: |
+          make test-in-dev
