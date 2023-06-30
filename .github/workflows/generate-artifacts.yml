@@ -17,6 +17,8 @@ jobs:
           name: as3-config
           path: .artifact/
 
+      - run: echo "${{ github.event_name }}"
+
   trigger-pr-flow:
     runs-on: self-hosted
     needs: generate-artifacts
