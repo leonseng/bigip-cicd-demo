@@ -9,8 +9,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Apply configuration
+      - name: Excute tests
         run: |
+          set -e
           make test | tee test-output.txt
 
           echo 'TEST_OUTPUT<<EOF' >> $GITHUB_OUTPUT
