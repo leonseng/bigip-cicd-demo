@@ -31,7 +31,6 @@ jobs:
           pr: ${{ github.event.pull_request.number }}
           name: as3-config
           skip_unpack: true
-      - run: ls -la
       - name: Pull request artifacts
         uses: gavv/pull-request-artifacts@v1.0.0
         with:
