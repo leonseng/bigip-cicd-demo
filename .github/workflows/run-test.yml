@@ -1,4 +1,4 @@
-name: Generate artifacts
+name: Run test
 on:
   workflow_dispatch:
   repository_dispatch:
