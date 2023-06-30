@@ -11,6 +11,7 @@ jobs:
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ github.event.client_payload.sha }}
           status: pending
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -38,4 +39,5 @@ jobs:
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ github.event.client_payload.sha }}
           status: ${{ job.status }}
