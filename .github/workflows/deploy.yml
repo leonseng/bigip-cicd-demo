@@ -1,10 +1,10 @@
-name: Apply config
+name: Deploy
 on:
   push:
     branches:
       - master
 jobs:
-  apply-config:
+  deploy-config:
     runs-on: self-hosted
     steps:
       - name: Check out repository code
@@ -18,7 +18,7 @@ jobs:
 
   trigger-test:
     runs-on: self-hosted
-    needs: apply-config
+    needs: deploy-config
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
