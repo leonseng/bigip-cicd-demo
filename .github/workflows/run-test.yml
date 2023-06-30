@@ -1,4 +1,4 @@
-name: Run test
+name: Run tests
 on:
   workflow_dispatch:
   repository_dispatch:
@@ -9,9 +9,12 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Excute tests
+      - name: Run test target
+        id: run-test-target
         run: |
           set -e
+          set -o pipefail
+
           make test | tee test-output.txt
 
           echo 'TEST_OUTPUT<<EOF' >> $GITHUB_OUTPUT
@@ -19,8 +22,8 @@ jobs:
           echo 'EOF' >> $GITHUB_OUTPUT
 
       - name: Create GitHub issue if test failed
-        if: ${{ failure() }}
+        if: failure()
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST_OUTPUT: ${{ steps.get-artifact-url.outputs.TEST_OUTPUT }}
+          TEST_OUTPUT: ${{ steps.run-test-target.outputs.TEST_OUTPUT }}
