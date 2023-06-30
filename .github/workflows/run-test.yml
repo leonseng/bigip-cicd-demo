@@ -1,0 +1,14 @@
+name: Generate artifacts
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [run-test]
+jobs:
+  test:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Apply configuration
+        run: |
+          make test
