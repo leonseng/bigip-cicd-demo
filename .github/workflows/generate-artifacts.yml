@@ -16,12 +16,3 @@ jobs:
         with:
           name: as3-config
           path: .artifact/
-      - uses: 8BitJonny/gh-get-current-pr@2.2.0
-        id: pr-check
-      - name: Trigger pr-workflow
-        if: steps.pr-check.outputs.found
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.REPO_DISPATCH_PAT }}
-          event-type: run-pr-workflow
-          client-payload: '{"run_id": ${{ github.run_id }}}'

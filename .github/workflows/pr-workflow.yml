@@ -1,26 +1,19 @@
 name: Run PR workflow
 on:
-  repository_dispatch:
-    types: [run-pr-workflow]
+  pull_request:
+    types: [opened, synchronize]
 jobs:
   test-in-dev:
     runs-on: self-hosted
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-
-      - name: Download artifact
-        id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          pr: ${{ github.event.pull_request.number }}
-          name: as3-config
-          path: .artifact/
-
+      - name: Generate artifact
+        run: |
+          make generate
       - name: Apply configuration in dev
         run: |
           make apply-in-dev
-
       - name: Run test in dev
         run: |
           make test-in-dev
