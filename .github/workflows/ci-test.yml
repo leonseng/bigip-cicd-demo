@@ -1,9 +1,9 @@
-name: Run PR workflow
+name: CI Test
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  test-in-dev:
+  run-tests-in-dev:
     runs-on: self-hosted
     steps:
       - name: Check out repository code
@@ -17,6 +17,6 @@ jobs:
       - name: Apply configuration in dev
         run: |
           make apply-in-dev
-      - name: Run test in dev
+      - name: Run make test-in-dev
         run: |
           make test-in-dev

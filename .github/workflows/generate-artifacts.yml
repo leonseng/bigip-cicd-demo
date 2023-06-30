@@ -1,4 +1,4 @@
-name: Generate artifacts
+name: Generate Artifacts
 on:
   push:
     branches-ignore:
