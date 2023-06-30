@@ -1,7 +1,5 @@
 name: Generate artifacts
 on:
-  pull_request:
-    types: [opened, synchronize]
   push:
     branches-ignore:
       - master
@@ -19,7 +17,7 @@ jobs:
           name: as3-config
           path: .artifact/
 
-      - run: echo "${{ github.event_name }}"
+      - run: echo "${{ toJson(github) }}"
 
   trigger-pr-flow:
     runs-on: self-hosted
