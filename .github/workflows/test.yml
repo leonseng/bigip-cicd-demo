@@ -7,23 +7,11 @@ jobs:
   run-tests:
     runs-on: self-hosted
     steps:
-      - name: Debug event name
-        run: |
-          echo ${{ github.event_name }}
-          echo "${{ toJson(github) }}"
-      - name: Set SHA value if triggered by workflow_dispatch
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: |
-          echo "USE_SHA=${{ github.sha }}" >> "$GITHUB_ENV"
-      - name: Set SHA value if triggered by repository_dispatch
-        if: ${{ github.event_name == 'repository_dispatch'}}
-        run: |
-          echo "USE_SHA=${{ github.event.client_payload.sha }}" >> "$GITHUB_ENV"
       - name: Set commit status as pending
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ env.USE_SHA }}
+          sha: ${{ github.sha }}
           status: pending
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -50,5 +38,5 @@ jobs:
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ env.USE_SHA }}
+          sha: ${{ github.sha }}
           status: ${{ job.status }}

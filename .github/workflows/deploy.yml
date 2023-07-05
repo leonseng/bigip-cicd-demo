@@ -20,4 +20,3 @@ jobs:
         with:
           token: ${{ secrets.REPO_DISPATCH_PAT }}
           event-type: run-test
-          client-payload: '{"sha": "${{ github.sha }}"}'
