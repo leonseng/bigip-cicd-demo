@@ -27,11 +27,6 @@
             content: "last_run: {{ id }}"
             dest: "{{ root_dir }}/.artifact/.metadata"
 
-        - name: Generate firewall policies
-          copy:
-            content: "{{ lookup('template', '{{ root_dir }}/templates/firewall-policy.json.j2') | to_json(indent=2) }}"
-            dest: "{{ artifact_dir }}/firewall-policy.json"
-
         - name: Get a list of unique tenants defined
           set_fact:
             all_tenants: "{{ applications | map(attribute='tenant') | unique | list }}"

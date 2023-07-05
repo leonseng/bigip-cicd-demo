@@ -1,0 +1,28 @@
+- name: Generate configuration
+  hosts: all
+  gather_facts: false
+  vars:
+    id: "{{ ansible_date_time.iso8601_basic }}"
+    artifact_dir: "{{ root_dir }}/.artifact/{{ inventory_hostname }}"
+    rendered_policies: {}
+  tasks:
+    - delegate_to: localhost
+      block:
+        - setup:
+            gather_subset:
+              - min
+
+        - name: Create .artifact directory
+          file:
+            path: "{{ artifact_dir }}"
+            state: directory
+
+        - name: Make a note of last run time
+          copy:
+            content: "last_run: {{ id }}"
+            dest: "{{ root_dir }}/.artifact/.metadata"
+
+        - name: Generate firewall policies
+          copy:
+            content: "{{ lookup('template', '{{ root_dir }}/templates/firewall-policy.json.j2') | to_json(indent=2) }}"
+            dest: "{{ artifact_dir }}/firewall-policy.json"
