@@ -2,12 +2,17 @@
   "policy": {
     "name": "{{ var.name }}",
     "template": {
-      "name": "POLICY_TEMPLATE_FUNDAMENTAL"
-    },
-    "general": {
-      "allowedResponseCodes": {{ var.allowed_response_codes }}
+      "name": "POLICY_TEMPLATE_RAPID_DEPLOYMENT"
     },
     "applicationLanguage": "utf-8",
-    "enforcementMode": "blocking"
+    "caseInsensitive" : false,
+    "description" : "Rapid Deployment Policy",
+    "enablePassiveMode" : false,
+    "enforcementMode" : "blocking",
+    "protocolIndependent" : false,
+      "signature-settings" : {
+         "signatureStaging" : false
+      },
+    "type": "security"
   }
 }
