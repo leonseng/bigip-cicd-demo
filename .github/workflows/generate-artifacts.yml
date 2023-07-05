@@ -2,7 +2,7 @@ name: Generate Artifacts
 on:
   push:
     branches-ignore:
-      - master
+      - main
 jobs:
   generate-artifacts:
     runs-on: self-hosted
