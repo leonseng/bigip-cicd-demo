@@ -7,23 +7,11 @@ jobs:
   run-tests:
     runs-on: self-hosted
     steps:
-      - name: Debug event name
-        run: |
-          echo ${{ github.event_name }}
-          echo "${{ toJson(github) }}"
-      - name: Set SHA value if triggered by workflow_dispatch
-        if: ${{ github.event_name == 'workflow_dispatch'}}
-        run: |
-          echo "USE_SHA=${{ github.sha }}" >> "$GITHUB_ENV"
-      - name: Set SHA value if triggered by repository_dispatch
-        if: ${{ github.event_name == 'repository_dispatch'}}
-        run: |
-          echo "USE_SHA=${{ github.event.client_payload.sha }}" >> "$GITHUB_ENV"
       - name: Set commit status as pending
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ env.USE_SHA }}
+          sha: ${{ github.sha }}
           status: pending
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -33,14 +21,14 @@ jobs:
           set -o pipefail
           make test 2>&1 | tee test-output.txt
       - name: Extract test results to be published to Github Issue
-        if: steps.run-test.outcome == 'failure'
+        if: failure() && steps.run-test.outcome == 'failure'
         id: extract-results
         run: |
           echo 'TEST_OUTPUT<<EOF' >> $GITHUB_OUTPUT
           cat test-output.txt >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
       - name: Create GitHub issue if test failed
-        if: steps.run-test.outcome == 'failure'
+        if: failure() && steps.run-test.outcome == 'failure'
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,5 +38,5 @@ jobs:
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ env.USE_SHA }}
+          sha: ${{ github.sha }}
           status: ${{ job.status }}
