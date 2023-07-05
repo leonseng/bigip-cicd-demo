@@ -28,18 +28,19 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Run make test
+        id: run-test
         run: |
           set -o pipefail
           make test 2>&1 | tee test-output.txt
       - name: Extract test results to be published to Github Issue
-        if: failure()
+        if: steps.run-test.outcome == 'failure'
         id: extract-results
         run: |
           echo 'TEST_OUTPUT<<EOF' >> $GITHUB_OUTPUT
           cat test-output.txt >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
       - name: Create GitHub issue if test failed
-        if: failure()
+        if: steps.run-test.outcome == 'failure'
         uses: JasonEtco/create-an-issue@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
