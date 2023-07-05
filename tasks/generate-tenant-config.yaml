@@ -2,16 +2,14 @@
   when: deploy_in_dev
   set_fact:
     apps: "{{ applications | selectattr('tenant', 'equalto', tenant) | selectattr('dev_virtual_address', 'defined') | list }}"
-    conf_dir: "{{ artifact_dir }}/dev"
 
 - name: Get apps to be deployed
   when: not deploy_in_dev
   set_fact:
     apps: "{{ applications | selectattr('tenant', 'equalto', tenant) | list }}"
-    conf_dir: "{{ artifact_dir }}"
 
 - name: Generate tenant config{{ " for dev" if deploy_in_dev else ""}}
   when: apps | length != 0
   copy:
     content: "{{ lookup('template', '{{ root_dir }}/templates/tenant.json.j2') | to_json(indent=2) }}"
-    dest: "{{ conf_dir }}/tenant-{{ tenant }}.json"
+    dest: "{{ artifact_dir }}/tenant-{{ tenant }}{{ '_dev' if deploy_in_dev else ''}}.json"
