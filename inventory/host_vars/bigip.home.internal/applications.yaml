@@ -10,7 +10,6 @@ applications:
       template: sample.json.j2
       variables:
         name: as3_sample
-        allowed_response_codes: [200, 400]
   - tenant: as3_openapi
     name: as3_vs_httpbin_proxy
     virtual_address: "192.168.0.201"
