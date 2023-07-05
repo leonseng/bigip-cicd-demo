@@ -10,7 +10,7 @@ jobs:
       - name: Debug event name
         run: |
           echo ${{ github.event_name }}
-          echo ${{ toJson(github) }}
+          echo "${{ toJson(github) }}"
       - name: Set SHA value if triggered by workflow_dispatch
         if: ${{ github.event_name == 'workflow_dispatch'}}
         run: |
