@@ -1,0 +1,12 @@
+- name: Use Collections
+  hosts: all
+  connection: httpapi
+  gather_facts: false
+  collections:
+    - f5networks.f5_bigip
+
+  tasks:
+    - name: Remove firewall policies
+      bigip_as3_deploy:
+        state: absent
+        tenant: Common

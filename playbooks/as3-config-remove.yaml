@@ -6,16 +6,18 @@
     - f5networks.f5_bigip
 
   tasks:
-    - name: Remove VS
+    - name: Remove tenants
+      loop: "{{ applications | map(attribute='tenant') | unique | list }}"
+      loop_control:
+        loop_var: tenant_name
       bigip_as3_deploy:
-        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/virtual-server.json') }}"
-
-    - name: Remove dev VS
-      bigip_as3_deploy:
-        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/dev/virtual-server.json') }}"
-
-    - name: Remove firewall policies
-      bigip_as3_deploy:
-        content: "{{ lookup('file', '{{ root_dir }}/.artifact/{{ inventory_hostname }}/firewall-policy.json') }}"
+        tenant: "{{ tenant_name }}"
         state: absent
-        tenant: Common
+
+    - name: Remove dev tenants
+      loop: "{{ applications | selectattr('dev_virtual_address', 'defined') | map(attribute='tenant') | unique | list }}"
+      loop_control:
+        loop_var: tenant_name
+      bigip_as3_deploy:
+        tenant: "{{ tenant_name }}_dev"
+        state: absent
