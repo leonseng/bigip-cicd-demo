@@ -17,11 +17,6 @@
             path: "{{ artifact_dir }}"
             state: directory
 
-        - name: Create dev subdir in .artifact directory
-          file:
-            path: "{{ artifact_dir }}/dev"
-            state: directory
-
         - name: Make a note of last run time
           copy:
             content: "last_run: {{ id }}"

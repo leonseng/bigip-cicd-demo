@@ -10,9 +10,10 @@
       block:
         - name: Get list of tenants to be deployed in dev
           find:
-            paths: "{{ root_dir }}/.artifact/{{ inventory_hostname }}/dev"
+            paths: "{{ root_dir }}/.artifact/{{ inventory_hostname }}"
             file_type: file
-            patterns: "tenant-*"
+            use_regex: true
+            patterns: "tenant-.+_dev\\.json"
           register: files_result
 
         - name: Create dev tenants
@@ -29,7 +30,8 @@
           find:
             paths: "{{ root_dir }}/.artifact/{{ inventory_hostname }}"
             file_type: file
-            patterns: "tenant-*"
+            use_regex: true
+            patterns: "tenant-.+(?<!_dev)\\.json"
           register: files_result
 
         - name: Create tenants
