@@ -16,7 +16,7 @@ test-in-dev:
 	fi
 
 	@echo "Send test traffic to dev VS"
-	@curl --fail $(DEV_VS_IP)/get
+	curl -s --fail $(DEV_VS_IP)/get
 
 VS_STATS_PATH := "/mgmt/tm/ltm/virtual/~as3_openapi~as3_vs_httpbin_proxy_app~as3_vs_httpbin_proxy_svc/stats"
 VS_IP := "192.168.0.201"
@@ -36,4 +36,4 @@ test:
 	fi
 
 	@echo "Send test traffic to VS"
-	@curl --fail $(VS_IP)/get
+	curl -s --fail $(VS_IP)/get
