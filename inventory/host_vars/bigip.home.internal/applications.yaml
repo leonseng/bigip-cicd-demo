@@ -7,8 +7,3 @@ applications:
       monitor: http
       members:
         - home-lab.home.internal:8080
-    app_sec_policy:
-      template: openapi-spec-enforcement.json.j2
-      variables:
-        name: as3_httpbin_openapi
-        openapi_spec_link: https://gist.githubusercontent.com/leonseng/cfd1def2d6e6bcbb04c1545472377d1c/raw/daad19fecd59cfe47bdbd4ada66b024fdb120120/httpbin-openapi-spec-basic.yaml
